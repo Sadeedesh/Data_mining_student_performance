@@ -1,32 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Order Search System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>Student Performance Management</h1>
+            <p class="subtitle">Search and view student details</p>
+        </header>
 
-    <h2>Search Person by Order Number</h2>
+        <div class="search-section">
+            <form method="POST" class="search-form">
+                <div class="input-group">
+                    <input type="number" name="order_id" placeholder="Enter Student ID" required>
+                    <button type="submit">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Search
+                    </button>
+                </div>
+            </form>
 
-    <form method="POST">
-        <input type="number" name="order_id" placeholder="Enter Order ID" required>
-        <button type="submit">Search</button>
-    </form>
+            {% if error %}
+                <div class="alert error">{{ error }}</div>
+            {% endif %}
+        </div>
 
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
-
-    {% if person is not none and not person.empty %}
-        <h3>Person Details:</h3>
-        <table border="1" cellpadding="5">
-            {% for col in person.columns %}
-            <tr>
-                <th>{{ col }}</th>
-                <td>{{ person.iloc[0][col] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
-
+        {% if person is not none and not person.empty %}
+            <div class="results-section">
+                <h2>Student Details</h2>
+                <div class="student-card">
+                    <div class="card-header">
+                        <div class="avatar">{{ person.iloc[0]['school'] if 'school' in person.columns else 'S' }}</div>
+                        <div class="header-info">
+                            <h3>Student ID: {{ person.iloc[0]['order_id'] if 'order_id' in person.columns else 'N/A' }}</h3>
+                            <span class="badge">{{ person.iloc[0]['school'] if 'school' in person.columns else 'N/A' }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-grid">
+                            {% for col in person.columns %}
+                            <div class="info-item">
+                                <span class="label">{{ col }}</span>
+                                <span class="value">{{ person.iloc[0][col] }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>
